@@ -55,7 +55,7 @@ public class shootBalls extends CommandBase {
           //RobotContainer.ballFeeder.pullBallsIn();
           //tx = RobotContainer.limelight.getTargetXAngle();
 
-          final double STEER_K = 0.2;
+          final double STEER_K = 0.08;
         
           double tx = Limelight.getTargetXAngle();
           //double ta = Limelight.getTargetArea();
@@ -63,13 +63,14 @@ public class shootBalls extends CommandBase {
           double steer_cmd = tx * STEER_K;
           steerCommand = steer_cmd;
 
-          if (tx != 0) {
+          if (tx > .01 || tx < -.01) {
             System.out.println("Hi. It's me again. I have a valid target.");
             // RobotContainer.driveTrain.robotDrive.arcadeDrive(drive, steerCommand);
-            RobotContainer.driveTrain.auto_drive(0.2, steerCommand);
+            RobotContainer.driveTrain.auto_drive(0, steerCommand);
           }
-          else if (tx < 2 && tx > -2){
+          else if (tx <= .01 && tx >= -.01){
             RobotContainer.driveTrain.auto_drive(0.0, 0.0);
+            System.out.println(tx);
           }
         }
       else {
