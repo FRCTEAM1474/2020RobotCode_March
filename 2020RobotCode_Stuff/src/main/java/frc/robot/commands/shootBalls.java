@@ -45,34 +45,34 @@ public class shootBalls extends CommandBase {
   public void execute() {
     double steerCommand = 0.0;
 
-      if (RobotContainer.operatorJoystick.getRawButton(Constants.shootBallIn)) {
+      if (RobotContainer.operatorJoystick.getRawButton(Constants.shootBallIn)) 
+      {
           RobotContainer.flyWheel.shootBallsIn();
       }
-      else if (RobotContainer.operatorJoystick.getRawButton(Constants.shootBallOut)) {
+      else if (RobotContainer.operatorJoystick.getRawButton(Constants.shootBallOut)) 
+      {
           RobotContainer.flyWheel.shootingTheBallsPID();
           Limelight.setPipeline(0);
-          //RobotContainer.flyWheel.shootBallsIn();
-          //RobotContainer.ballFeeder.pullBallsIn();
-          //tx = RobotContainer.limelight.getTargetXAngle();
+          
 
-          final double STEER_K = 0.2;
+          final double STEER_K = 0.2; //constant that determines turning sensitivity and overcorrecting
         
-          double tx = Limelight.getTargetXAngle();
-          //double ta = Limelight.getTargetArea();
-      
+          double tx = Limelight.getTargetXAngle();      
           double steer_cmd = tx * STEER_K;
-          steerCommand = steer_cmd;
+          //steerCommand = steer_cmd; dont think this is needed anymore
 
-          if (tx != 0) {
-            System.out.println("Hi. It's me again. I have a valid target.");
-            // RobotContainer.driveTrain.robotDrive.arcadeDrive(drive, steerCommand);
-            RobotContainer.driveTrain.auto_drive(0.2, steerCommand);
+          if (tx != 0) 
+          {
+            RobotContainer.driveTrain.auto_drive(0, steer_cmd); // changed argument to steer_cmd
           }
-          else if (tx < 2 && tx > -2){
+          else if (tx < 2 && tx > -2)
+          {
             RobotContainer.driveTrain.auto_drive(0.0, 0.0);
+            RobotContainer.ballFeeder.pushBallsOut();  //added this to automatically feed balls into the launcher when we're targeted
           }
         }
-      else {
+      else 
+      {
           RobotContainer.flyWheel.stopShootingBalls();
           RobotContainer.flyWheel.limeLightStatus();
           RobotContainer.ballFeeder.stopMovingBalls();
