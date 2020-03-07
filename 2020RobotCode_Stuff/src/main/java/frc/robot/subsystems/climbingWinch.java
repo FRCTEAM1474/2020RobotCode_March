@@ -40,11 +40,11 @@ public class climbingWinch extends SubsystemBase {
   }
 
   public void winchForward() {
-      climbGearbox.set(1.0);
+      climbGearbox.set(0.5);
   }
 
   public void winchReverse() {
-      climbGearbox.set(-1.0);
+      climbGearbox.set(-0.5);
   }
 
   public void stopWinching() {
