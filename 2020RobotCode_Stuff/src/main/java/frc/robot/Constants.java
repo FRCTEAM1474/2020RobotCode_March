@@ -122,6 +122,14 @@ public class Constants {
     public static double kADrive = 0.268;
     public static double kPDrive = 0.000374;
     public static double kDDrive = 0.00018;
+    public static double kTrackWidthMeters = 0.8299433878751928;
+
+
+    //PathWeaver Constants
+    public static double kMaxSpeed = 4;
+    public static double kMaxAccel = 2;
+    public static double kRamseteB = 2; //should be good for most robots
+    public static double kRamseteZeta = 0.7; //should be good for most robots
 
 
     //Flywheel Stuff
@@ -129,4 +137,17 @@ public class Constants {
     public static double setAngleBall = 26;
     public static double gravity = 9.81;
     public static double radiusFlywheel = .1524;
+
+
+
+    //limelight stuff
+    public static int shootingPipeline = 0;
+    public static int regularPipeline = 1;
+
+
+
+    //encoder stuff
+    public static int kTimeoutMs = 30;
+    public static boolean kGyroReversed = true;
+    public static double wheelRadiusDrive = 0.1524;
 }

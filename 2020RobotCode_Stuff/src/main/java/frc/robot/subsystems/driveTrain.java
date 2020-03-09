@@ -8,18 +8,25 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.states.shiftingGearboxStates;
 
-import java.io.Console;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -49,6 +56,13 @@ public class driveTrain extends SubsystemBase {
   //gyro stuff
   public AHRS ahrs;
 
+  public DifferentialDriveOdometry driveOdometry;
+  public double vLeft, vRight, omegaLeft, omegaRight;
+
+  public double distancePulse;
+
+  public double leftTravel, rightTravel, leftPos, rightPos;
+
   
   public driveTrain() {
 
@@ -65,6 +79,7 @@ public class driveTrain extends SubsystemBase {
       //set other two motor controllers to follow master
       leftFollowerOne.follow(leftMaster);
       leftFollowerTwo.follow(leftMaster);
+      leftMaster.setNeutralMode(NeutralMode.Brake);
 
       //sets all three motors controllers to factory defaults
       leftMaster.configFactoryDefault();
@@ -93,6 +108,7 @@ public class driveTrain extends SubsystemBase {
       //set other two motor controllers to follow master
       rightFollowerOne.follow(rightMaster);
       rightFollowerTwo.follow(rightMaster);
+      rightMaster.setNeutralMode(NeutralMode.Brake);
         
       //sets all three motors controllers to factory defaults
       rightMaster.configFactoryDefault();
@@ -116,11 +132,102 @@ public class driveTrain extends SubsystemBase {
         
     //System.out.println("Hello");
 
+    ahrs = new AHRS(SPI.Port.kMXP);
 
+    driveOdometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
-    
+    resetEncoders();
+
+    leftPos = leftMaster.getSelectedSensorPosition();
+    rightPos = rightMaster.getSelectedSensorPosition();
+
+    leftTravel = leftPos * distancePerPulse();
+    rightTravel = rightPos * distancePerPulse();
 
   }
+
+
+
+
+  //function which switches pneumatic cylinders flow of air (changes gears)
+  public void actuateShiftingGearboxes() {
+    if (shiftState.equals(shiftingGearboxStates.IN)){
+      shiftingSolenoid.set(Value.kReverse);
+      shiftState = shiftingGearboxStates.OUT;
+    }
+    else {
+      shiftingSolenoid.set(Value.kForward);
+      shiftState = shiftingGearboxStates.IN;
+    }
+  }
+
+  public double distancePerPulse() {
+    distancePulse = (2 * Math.PI * Constants.wheelRadiusDrive) / (Constants.kSensorUnitsPerRotation * 3);
+
+    return distancePulse;
+  }
+
+  public Pose2d getPose() {
+    return driveOdometry.getPoseMeters();
+  }
+
+
+  public double getWheelSpeedLeft() {
+    omegaLeft = ((leftMaster.getSelectedSensorVelocity() * Constants.kGearRatio) * 10 * ((Math.PI * 2) / Constants.kSensorUnitsPerRotation) * -1);
+    vLeft = (omegaLeft * Constants.wheelRadius);
+
+    return vLeft;
+  }
+
+  public double getWheelSpeedRight() {
+    omegaRight = ((leftMaster.getSelectedSensorVelocity() * Constants.kGearRatio) * 10 * ((Math.PI * 2) / Constants.kSensorUnitsPerRotation) * -1);
+    vRight = (omegaRight* Constants.wheelRadius);
+
+    return vRight;
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(vLeft, vRight);
+  }
+
+
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    driveOdometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+  }
+
+  //code which converts amount driver pushes joystick to output speed of motors. Also now used for autonomous turning when shooting
+  public void driving(double speedL, double speedR){
+    robotDrive.arcadeDrive(speedL, speedR);
+  }
+
+  public void driveWithVolts(double leftVolts, double rightVolts) {
+    leftMaster.setVoltage(leftVolts);
+    rightMaster.setVoltage(-rightVolts);
+    robotDrive.feed();
+  }
+
+  public void resetEncoders() {
+    leftPos = 0;
+    rightPos = 0;
+  }
+
+  public double getAverageEncoderDistance() {
+    return (leftTravel + rightTravel) / 2.0;
+  }
+
+  public void zeroHeading() {
+    ahrs.zeroYaw();
+  }
+
+  public double getHeading() {
+    return Math.IEEEremainder(ahrs.getAngle(), 360) * (Constants.kGyroReversed ? -1.0 : 1.0);
+  }
+
+  public double getTurnRate() {
+    return ahrs.getRate();
+  }
+
 
 
 
@@ -137,49 +244,7 @@ public class driveTrain extends SubsystemBase {
     rightMaster.set(ControlMode.PercentOutput, ySpeed);
     rightMaster.getFaults(encoderFaults);
 
-    if (RobotContainer.driverJoystick.getRawButton(1)) {
 
-      double omega = ((leftMaster.getSelectedSensorVelocity() * Constants.kGearRatio) * 10 * ((Math.PI * 2) / Constants.kSensorUnitsPerRotation) * -1);
-
-      double v = (omega * Constants.wheelRadius);
-
-      //System.out.println("Output Velocity (in / s): " + v);
-
-      //System.out.println("Sensor Velocity Left: " + (leftMaster.getSelectedSensorVelocity() * -1));
-      //System.out.println("Sensor Velocity Right: " + rightMaster.getSelectedSensorVelocity());
-      //System.out.println("Sensor Position Left: " + leftMaster.getSelectedSensorPosition());
-      //System.out.println("Sensor Position Right: " + rightMaster.getSelectedSensorPosition());
-      //System.out.println("Out % Left: " + (leftMaster.getMotorOutputPercent() * -1));
-      //System.out.println("Out % Right: " + rightMaster.getMotorOutputPercent());
-      //System.out.println("Out Of Phase: " + encoderFaults.SensorOutOfPhase);
-    }
-  }
-
-
-  public void auto_drive(double spd, double rot)
-  {
-    robotDrive.arcadeDrive(spd,rot);
-    System.out.println("Do I work?");
-  }
-
-
-  //code which converts amount driver pushes joystick to output speed of motors
-  public void driving(double speedL, double speedR){
-    robotDrive.arcadeDrive(speedL, speedR);
-  }
-
-
-
-
-  //function which switches pneumatic cylinders flow of air (changes gears)
-  public void actuateShiftingGearboxes() {
-    if (shiftState.equals(shiftingGearboxStates.IN)){
-      shiftingSolenoid.set(Value.kReverse);
-      shiftState = shiftingGearboxStates.OUT;
-    }
-    else {
-      shiftingSolenoid.set(Value.kForward);
-      shiftState = shiftingGearboxStates.IN;
-    }
+    driveOdometry.update(Rotation2d.fromDegrees(getHeading()), leftTravel, rightTravel);
   }
 }
