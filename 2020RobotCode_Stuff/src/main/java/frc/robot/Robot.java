@@ -7,18 +7,11 @@
 
 package frc.robot;
 
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorSensorV3;
-
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Limelight;
@@ -38,33 +31,10 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   public static Compressor compressor;
 
-  private final I2C.Port i2cPort = I2C.Port.kOnboard;
-
-  private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
-
-  public static ColorMatch colorMatcher = new ColorMatch();
-
-  public static Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
-  public static Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
-  public static Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
-  public static Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
-
-  public static String colorString;
 
   public static double timer;
   public static DriverStation FRC1474DriverStation;
 
-  private static final double kHoldDistance = 12.0;
-
-  // factor to convert sensor values to a distance in inches
-  private static final double kValueToInches = 0.125;
-
-  // proportional speed constant
-  private static final double kP = 0.05;
-
-  private static final int kUltrasonicPort = 0;
-
-  private final AnalogInput m_ultrasonic = new AnalogInput(kUltrasonicPort);
 
 
   /**
@@ -163,42 +133,6 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
 
-    colorMatcher.addColorMatch(kBlueTarget);
-    colorMatcher.addColorMatch(kGreenTarget);
-    colorMatcher.addColorMatch(kRedTarget);
-    colorMatcher.addColorMatch(kYellowTarget);
-
-    Color detectedColor = colorSensor.getColor();
-
-    ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
-
-    if (match.color == kBlueTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) {
-        colorString = "Blue";
-        RobotContainer.ledlights.setBlue();
-      } else if (match.color == kRedTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) {
-        colorString = "Red";
-        RobotContainer.ledlights.setRed();
-      } else if (match.color == kGreenTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) {
-        colorString = "Green";
-        RobotContainer.ledlights.setGreen();
-      } else if (match.color == kYellowTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) {
-        colorString = "Yellow";
-        RobotContainer.ledlights.setYellow();
-      } else {
-        colorString = "Unknown";
-      }
-
-    SmartDashboard.putNumber("Red", detectedColor.red);
-    SmartDashboard.putNumber("Green", detectedColor.green);
-    SmartDashboard.putNumber("Blue", detectedColor.blue);
-    SmartDashboard.putNumber("Confidence", match.confidence);
-    SmartDashboard.putString("Detected Color", colorString);
-    SmartDashboard.putNumber("Ultrasonic", m_ultrasonic.getValue());
-
-
-
-
-    
     timer = Timer.getMatchTime();
 
   }
