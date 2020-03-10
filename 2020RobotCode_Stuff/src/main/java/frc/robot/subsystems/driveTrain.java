@@ -171,14 +171,14 @@ public class driveTrain extends SubsystemBase {
 
   public double getWheelSpeedLeft() {
     omegaLeft = ((leftMaster.getSelectedSensorVelocity() * Constants.kGearRatio) * 10 * ((Math.PI * 2) / Constants.kSensorUnitsPerRotation) * -1);
-    vLeft = (omegaLeft * Constants.wheelRadius);
+    vLeft = (omegaLeft * Constants.wheelRadiusDrive);
 
     return vLeft;
   }
 
   public double getWheelSpeedRight() {
     omegaRight = ((leftMaster.getSelectedSensorVelocity() * Constants.kGearRatio) * 10 * ((Math.PI * 2) / Constants.kSensorUnitsPerRotation) * -1);
-    vRight = (omegaRight* Constants.wheelRadius);
+    vRight = (omegaRight* Constants.wheelRadiusDrive);
 
     return vRight;
   }
@@ -199,8 +199,8 @@ public class driveTrain extends SubsystemBase {
   }
 
   public void driveWithVolts(double leftVolts, double rightVolts) {
-    leftMaster.setVoltage(leftVolts);
-    rightMaster.setVoltage(-rightVolts);
+    leftMotorSpeedController.setVoltage(leftVolts);
+    rightMotorSpeedController.setVoltage(-rightVolts);
     robotDrive.feed();
   }
 

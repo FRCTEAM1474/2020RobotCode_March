@@ -7,8 +7,20 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.examples.ExampleCommand;
 import frc.robot.commands.foldTheIntake;
 import frc.robot.commands.intakingBall;
@@ -31,6 +43,7 @@ import frc.robot.subsystems.flyWheel;
 import frc.robot.subsystems.intakeFolder;
 import frc.robot.subsystems.intakeOperator;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 
@@ -211,14 +224,30 @@ public class RobotContainer {
    */
 
   //example autonomous command
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+  public Command getAutonomousCommand() 
+  {
+    
+    var autoVoltageConstraint = new DifferentialDriveVoltageConstraint( new SimpleMotorFeedforward(Constants.kSDrive, Constants.kVDrive, Constants.kADrive), Constants.kDriveKinematics, 10);
+  
+    TrajectoryConfig config = new TrajectoryConfig(Constants.kMaxSpeed, Constants.kMaxAccel).setKinematics(Constants.kDriveKinematics).addConstraint(autoVoltageConstraint);
+    
+    String trajectoryJSON = "C:/Users/Robotics #6/Documents/GitHub/2020RobotCode_March/2020RobotCode_Stuff/Pathweaver Output/output/TestingAuto.wpilib.json";
+    try 
+    {
+
+    Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+    Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    RamseteCommand ramseteCommand = new RamseteCommand(trajectory, driveTrain::getPose, new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta), new SimpleMotorFeedforward(Constants.kSDrive, Constants.kVDrive, Constants.kADrive), Constants.kDriveKinematics, driveTrain::getWheelSpeeds, new PIDController(Constants.kPDrive, 0, 0), new PIDController(Constants.kPDrive, 0, 0), driveTrain::driveWithVolts, driveTrain);
+
+    return ramseteCommand.andThen(() -> driveTrain.driveWithVolts(0, 0));
+    }
+    catch (IOException ex) 
+    {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+      return null;
+    }
+
   }
-
-
-
-
 
 	public static void ledlights() {
 	}

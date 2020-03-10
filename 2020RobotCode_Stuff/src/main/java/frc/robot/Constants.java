@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -89,8 +91,6 @@ public class Constants {
     public static int kGearRatio = 3;
     public static int kMaxRPM = 5310;
 
-    public static int wheelRadius = 3;
-
 
 
     //intake folder constants
@@ -123,6 +123,7 @@ public class Constants {
     public static double kPDrive = 0.000374;
     public static double kDDrive = 0.00018;
     public static double kTrackWidthMeters = 0.8299433878751928;
+    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
 
     //PathWeaver Constants
