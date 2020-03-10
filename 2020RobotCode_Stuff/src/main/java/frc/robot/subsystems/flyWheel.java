@@ -7,23 +7,17 @@
 
 package frc.robot.subsystems;
 
-import javax.swing.RootPaneContainer;
-
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
-import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.commands.findDistance;
 import frc.robot.commands.shootBalls;
 
 
@@ -40,8 +34,6 @@ public class flyWheel extends SubsystemBase {
   public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
 
   private double steerCommand = 0.0;
-  private boolean hasValidTarget = false;
-  private double speedL, speedR;
 
 
 
@@ -149,31 +141,15 @@ public class flyWheel extends SubsystemBase {
   }
   
   public void limeLightStatus() {
-    if (Limelight.getPipeline() == 0 && RobotContainer.operatorJoystick.getRawButtonReleased(Constants.shootBallOut)) {
-      Limelight.setPipeline(1);
+    if (Limelight.getPipeline() == Constants.shootingPipeline && RobotContainer.operatorJoystick.getRawButtonReleased(Constants.shootBallOut)) {
+      Limelight.setPipeline(Constants.regularPipeline);
     }
   }
-  
-
-
-
-
-
-
-
-
-
-
-
 
   //function which sets speed of motor if button is held
   public void shootBallsIn(){
       flyWheelGroup.set(1);
   }
-
-
-
-
 
   //function which sets speed of motor forward if button is held
   public void shootBallsOut() {
@@ -196,49 +172,41 @@ public class flyWheel extends SubsystemBase {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+  public void autoAlignment() {
+    final double STEER_K = 0.08;
+        
+    double tx = Limelight.getTargetXAngle();
+    //double ta = Limelight.getTargetArea();
+
+    double steer_cmd = tx * STEER_K;
+    steerCommand = steer_cmd;
+
+    if (tx > .01 || tx < -.01) {
+      System.out.println("Hi. It's me again. I have a valid target.");
+      // RobotContainer.driveTrain.robotDrive.arcadeDrive(drive, steerCommand);
+      RobotContainer.driveTrain.driving(0, steerCommand);
+    }
+    else if (tx <= .01 && tx >= -.01){
+      RobotContainer.driveTrain.driving(0.0, 0.0);
+      //System.out.println(tx);
+    }
+  }
+
   
   @Override
   public void periodic() {
       //System.out.println(encoder.getVelocity());
       //System.out.println(convertToRPM() * 5.7);
-    
-   // updateLimeLightTracking();
-
-    //double steer = RobotContainer.driverJoystick.getRawAxis(1);
-    //double drive = RobotContainer.driverJoystick.getRawAxis(0);
-    boolean auto = RobotContainer.operatorJoystick.getRawButtonPressed(1);
-
-    if (auto) 
-    {
-
-      System.out.println(updateLimeLightTracking());
-      //tx = RobotContainer.limelight.getTargetXAngle();
-      if (updateLimeLightTracking() != 0) {
-        System.out.println("Hi. It's me again. I have a valid target.");
-       // RobotContainer.driveTrain.robotDrive.arcadeDrive(drive, steerCommand);
-       RobotContainer.driveTrain.auto_drive(0.2, steerCommand);
-      }
-      else {
-        RobotContainer.driveTrain.auto_drive(0.0, 0.0);
-      }
-    }
-    else {
-      RobotContainer.driveTrain.driving(speedL, speedR);
-    }
-
   }
-
-  public double updateLimeLightTracking() {
-    final double STEER_K = 0.5;
-
-    double tx = Limelight.getTargetXAngle();
-    //double ta = Limelight.getTargetArea();
-
-    hasValidTarget = true;
-
-    double steer_cmd = tx * STEER_K;
-    steerCommand = steer_cmd;
-
-    return tx;
-  }
-  }
+}

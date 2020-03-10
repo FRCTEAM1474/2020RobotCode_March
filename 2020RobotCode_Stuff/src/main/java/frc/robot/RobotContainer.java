@@ -24,6 +24,7 @@ import frc.robot.subsystems.LEDLights;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ballFeeder;
 import frc.robot.subsystems.climbingWinch;
+import frc.robot.subsystems.colorSensor;
 //import frc.robot.subsystems.controlPanel;
 import frc.robot.subsystems.driveTrain;
 import frc.robot.subsystems.flyWheel;
@@ -61,6 +62,7 @@ public class RobotContainer {
   public static climbingWinch climbingWinch;
   //public static controlPanel controlPanel;
   public static Limelight limelight;
+  public static colorSensor colorSensor;
 
   //definition of all robot joysticks
   public static Joystick driverJoystick;
@@ -104,6 +106,7 @@ public class RobotContainer {
     climbingWinch = new climbingWinch();
     //controlPanel = new controlPanel();
     limelight = new Limelight();
+    colorSensor = new colorSensor();
 
     //configure button bindings on controllers
     configureButtonBindings();
