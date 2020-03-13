@@ -28,8 +28,8 @@ import com.ctre.phoenix.motorcontrol.can.*;
 import com.kauailabs.navx.frc.AHRS;
 
 
-public class driveTrain extends SubsystemBase {
-
+public class driveTrain extends SubsystemBase 
+{
   //definition of all Drivetrain Talons
   private final WPI_TalonSRX leftMaster;
   private final WPI_TalonSRX leftFollowerOne;
@@ -61,8 +61,11 @@ public class driveTrain extends SubsystemBase {
   public double leftTravel, rightTravel, leftPos, rightPos;
 
   
-  public driveTrain() {
 
+
+
+  public driveTrain() 
+  {
     //instantiations of Pneumatics
     shiftingSolenoid = new DoubleSolenoid(Constants.shiftingGearboxesOne, Constants.shiftingGearboxesTwo);
     shiftState = shiftingGearboxStates.IN;
@@ -140,98 +143,133 @@ public class driveTrain extends SubsystemBase {
 
     leftTravel = leftPos * distancePerPulse();
     rightTravel = rightPos * distancePerPulse();
-
   }
 
 
 
-
   //function which switches pneumatic cylinders flow of air (changes gears)
-  public void actuateShiftingGearboxes() {
-    if (shiftState.equals(shiftingGearboxStates.IN)){
+  public void actuateShiftingGearboxes() 
+  {
+    if (shiftState.equals(shiftingGearboxStates.IN))
+    {
       shiftingSolenoid.set(Value.kReverse);
       shiftState = shiftingGearboxStates.OUT;
     }
-    else {
+    else 
+    {
       shiftingSolenoid.set(Value.kForward);
       shiftState = shiftingGearboxStates.IN;
     }
   }
 
-  public double distancePerPulse() {
-    distancePulse = (2 * Math.PI * Constants.wheelRadiusDrive) / (Constants.kSensorUnitsPerRotation * 3);
 
+
+  public double distancePerPulse() 
+  {
+    distancePulse = (2 * Math.PI * Constants.wheelRadiusDrive) / (Constants.kSensorUnitsPerRotation * 3);
     return distancePulse;
   }
 
-  public Pose2d getPose() {
+
+
+  public Pose2d getPose() 
+  {
     return driveOdometry.getPoseMeters();
   }
 
 
-  public double getWheelSpeedLeft() {
+
+  public double getWheelSpeedLeft() 
+  {
     omegaLeft = ((leftMaster.getSelectedSensorVelocity() * Constants.kGearRatio) * 10 * ((Math.PI * 2) / Constants.kSensorUnitsPerRotation) * -1);
     vLeft = (omegaLeft * Constants.wheelRadiusDrive);
 
     return vLeft;
   }
 
-  public double getWheelSpeedRight() {
+
+
+  public double getWheelSpeedRight() 
+  {
     omegaRight = ((leftMaster.getSelectedSensorVelocity() * Constants.kGearRatio) * 10 * ((Math.PI * 2) / Constants.kSensorUnitsPerRotation) * -1);
     vRight = (omegaRight* Constants.wheelRadiusDrive);
 
     return vRight;
   }
 
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() 
+  {
     return new DifferentialDriveWheelSpeeds(vLeft, vRight);
   }
 
 
-  public void resetOdometry(Pose2d pose) {
+
+  public void resetOdometry(Pose2d pose) 
+  {
     resetEncoders();
     driveOdometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
 
+
+
   //code which converts amount driver pushes joystick to output speed of motors. Also now used for autonomous turning when shooting
-  public void driving(double speedL, double speedR){
+  public void driving(double speedL, double speedR)
+  {
     robotDrive.arcadeDrive(speedL, speedR);
   }
 
-  public void driveWithVolts(double leftVolts, double rightVolts) {
+
+
+  public void driveWithVolts(double leftVolts, double rightVolts) 
+  {
     leftMotorSpeedController.setVoltage(leftVolts);
     rightMotorSpeedController.setVoltage(-rightVolts);
     robotDrive.feed();
   }
 
-  public void resetEncoders() {
+
+
+  public void resetEncoders() 
+  {
     leftPos = 0;
     rightPos = 0;
   }
 
-  public double getAverageEncoderDistance() {
+
+
+  public double getAverageEncoderDistance() 
+  {
     return (leftTravel + rightTravel) / 2.0;
   }
 
-  public void zeroHeading() {
+
+
+  public void zeroHeading() 
+  {
     ahrs.zeroYaw();
   }
 
-  public double getHeading() {
+
+
+  public double getHeading() 
+  {
     return Math.IEEEremainder(ahrs.getAngle(), 360) * (Constants.kGyroReversed ? -1.0 : 1.0);
   }
 
-  public double getTurnRate() {
+
+
+  public double getTurnRate() 
+  {
     return ahrs.getRate();
   }
 
 
 
-
-
-
   @Override
-  public void periodic() {
+  public void periodic() 
+  {
     // This method will be called once per scheduler run
     double ySpeed = RobotContainer.getDriverYSpeed();
 

@@ -12,56 +12,90 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 
-public class LEDLights extends SubsystemBase {
-
+public class LEDLights extends SubsystemBase 
+{
   //definition of Spark MAX
   private static Spark LEDMC;
 
-    public LEDLights() {
+
+
+
+
+    public LEDLights() 
+    {
         // instantiation of motor controller
         LEDMC = new Spark(Constants.LEDMC);
     }
 
+
+
     // function which sets speed of motor if button is held
-    public void setYellow() {
+    public void setYellow() 
+    {
         LEDMC.set(0.67);
     }
 
-    public void setRed() {
+
+
+    public void setRed() 
+    {
         LEDMC.set(0.59);
     }
 
-    public void setBlue() {
+
+
+    public void setBlue() 
+    {
         LEDMC.set(0.85);
     }
 
-    public void setGreen() {
+
+
+    public void setGreen() 
+    {
         LEDMC.set(0.75);
     }
 
-    public void testing() {
+
+
+    public void testing() 
+    {
         LEDMC.set(-0.45);
     }
 
-    public void preMatchNotConnected() {
+
+
+    public void preMatchNotConnected() 
+    {
         LEDMC.set(-0.25);
     }
 
-    public void preMatchConnected() {
+
+
+    public void preMatchConnected() 
+    {
         LEDMC.set(-0.21);
     }
 
-    public void defaultMatch() {
+
+
+    public void defaultMatch() 
+    {
         LEDMC.set(-0.87);
     }
 
-    public void endGameWarning() {
+
+
+    public void endGameWarning() 
+    {
         LEDMC.set(-0.11);
     }
 
+
   
   @Override
-  public void periodic() {
+  public void periodic() 
+  {
     //System.out.println("Voltage: " + intakeFolderMotor.getBusVoltage());
     //System.out.println("Temperature: " + intakeFolderMotor.getMotorTemperature());
     //System.out.println("Output: " + intakeFolderMotor.getAppliedOutput());

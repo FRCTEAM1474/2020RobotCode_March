@@ -21,8 +21,8 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.shootBalls;
 
 
-public class flyWheel extends SubsystemBase {
-
+public class flyWheel extends SubsystemBase 
+{
   //definition of Spark MAX
   private CANSparkMax flyWheelMaster;
   private CANSparkMax flyWheelFollower;
@@ -39,7 +39,8 @@ public class flyWheel extends SubsystemBase {
 
 
 
-  public flyWheel() {
+  public flyWheel() 
+  {
     //instantiation of motor controller
     flyWheelMaster = new CANSparkMax(Constants.flyWheelMaster, MotorType.kBrushless);
     flyWheelFollower = new CANSparkMax(Constants.flyWheelFollower, MotorType.kBrushless);
@@ -58,7 +59,6 @@ public class flyWheel extends SubsystemBase {
     pidController = flyWheelMaster.getPIDController();
     pidController_2 = flyWheelFollower.getPIDController();
     encoder = flyWheelMaster.getEncoder();
-
 
     kP = 6e-5; 
     kI = 0;
@@ -83,19 +83,26 @@ public class flyWheel extends SubsystemBase {
     pidController_2.setOutputRange(kMinOutput, kMaxOutput);
   }
 
-  public double yAngleOffset() {
+
+
+  public double yAngleOffset() 
+  {
     double a2 = Limelight.getTargetYAngle();
     return a2;
   }
 
-  public double targetDistance() {
+
+
+  public double targetDistance() 
+  {
     double distance = (Constants.h2 - Constants.h1)/(Math.tan((Constants.a1 + yAngleOffset())*2*Math.PI/360))/39.37;
     return distance;
-
   }  
 
 
-  public double launchVelocity() {
+
+  public double launchVelocity() 
+  {
     double deltaY = Constants.deltaY;
     double tangentAngle = Math.tan(Constants.setAngleBall*Math.PI/180);
     double cosineAngle = Math.cos(Constants.setAngleBall*Math.PI/180);
@@ -108,82 +115,94 @@ public class flyWheel extends SubsystemBase {
     return launchVelocity;
   }
 
-  public double convertToRPM() {
+
+
+  public double convertToRPM() 
+  {
     double rpm = ((launchVelocity() * 60) * 24 / (2 * Math.PI * Constants.radiusFlywheel * 15));
 
     return rpm;
   }
 
-  public void shootingTheBallsPID() {
+
+
+  public void shootingTheBallsPID() 
+  {
     double setPointOne, setPointTwo, velocityMotorOne, velocityMotorTwo;
 
     setPointOne = convertToRPM() * 5.7;  //constant multiplicative factor determined experimentally to consistently hit target
     setPointTwo = convertToRPM() * 7.75;
 
-    if (targetDistance() < 4.5) {
+    if (targetDistance() < 4.5) 
+    {
       pidController.setReference(setPointOne, ControlType.kVelocity);
       pidController_2.setReference(setPointOne, ControlType.kVelocity);
-    } else {
+    } 
+    else 
+    {
       pidController.setReference(setPointTwo, ControlType.kVelocity);
       pidController_2.setReference(setPointTwo, ControlType.kVelocity);
     }
 
     velocityMotorOne = encoder.getVelocity() * 4;
-      if (velocityMotorOne >= setPointOne) {
-        RobotContainer.ballFeeder.pullBallsIn();
-      }
-    velocityMotorTwo = encoder.getVelocity() * 2.8;
-      if (velocityMotorTwo >= setPointTwo) {
-        RobotContainer.ballFeeder.pullBallsIn();
-      }
-
+    if (velocityMotorOne >= setPointOne) 
+    {
+      RobotContainer.ballFeeder.pullBallsIn();
+    }
     
+    velocityMotorTwo = encoder.getVelocity() * 2.8;
+    if (velocityMotorTwo >= setPointTwo) 
+    {
+      RobotContainer.ballFeeder.pullBallsIn();
+    }
   }
   
-  public void limeLightStatus() {
-    if (Limelight.getPipeline() == Constants.shootingPipeline && RobotContainer.operatorJoystick.getRawButtonReleased(Constants.shootBallOut)) {
+
+
+  public void limeLightStatus() 
+  {
+    if (Limelight.getPipeline() == Constants.shootingPipeline && RobotContainer.operatorJoystick.getRawButtonReleased(Constants.shootBallOut)) 
+    {
       Limelight.setPipeline(Constants.regularPipeline);
     }
   }
 
+
+
   //function which sets speed of motor if button is held
-  public void shootBallsIn(){
+  public void shootBallsIn()
+  {
       flyWheelGroup.set(1);
   }
 
+
+
   //function which sets speed of motor forward if button is held
-  public void shootBallsOut() {
+  public void shootBallsOut() 
+  {
       flyWheelGroup.set(-1);
   }
+
+
+
   //function which sets speed of motor if button is not held
-  public void stopShootingBalls() {
+  public void stopShootingBalls() 
+  {
       flyWheelGroup.set(0);
   }
 
 
 
-
-
   //sets the initial command of the subsystem (found under commands folder)
-  protected void initDefaultCommand() {
+  protected void initDefaultCommand() 
+  {
       setDefaultCommand(new shootBalls());
   }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  public void autoAlignment() {
+  public void autoAlignment() 
+  {
     final double STEER_K = 0.08;
         
     double tx = Limelight.getTargetXAngle();
@@ -192,20 +211,24 @@ public class flyWheel extends SubsystemBase {
     double steer_cmd = tx * STEER_K;
     steerCommand = steer_cmd;
 
-    if (tx > .01 || tx < -.01) {
+    if (tx > .01 || tx < -.01) 
+    {
       System.out.println("Hi. It's me again. I have a valid target.");
       // RobotContainer.driveTrain.robotDrive.arcadeDrive(drive, steerCommand);
       RobotContainer.driveTrain.driving(0, steerCommand);
     }
-    else if (tx <= .01 && tx >= -.01){
+    else if (tx <= .01 && tx >= -.01)
+    {
       RobotContainer.driveTrain.driving(0.0, 0.0);
       //System.out.println(tx);
     }
   }
 
   
+
   @Override
-  public void periodic() {
+  public void periodic()
+  {
       //System.out.println(encoder.getVelocity());
       //System.out.println(convertToRPM() * 5.7);
   }

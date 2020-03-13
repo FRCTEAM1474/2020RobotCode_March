@@ -18,11 +18,8 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
  * constants are needed, to reduce verbosity.
  */
 
-
-
-
-
-public class Constants {
+public class Constants 
+{
     //joysticks
     public static int driverJoystick = 0;
     public static int operatorJoystick = 1;
@@ -60,6 +57,8 @@ public class Constants {
         //Motor for Control Panel Motor; Spark MAX
     //public static int controlPanel = 9;
 
+    
+
 
 
     //Buttons Driver Joystick
@@ -80,9 +79,13 @@ public class Constants {
 
     
 
+
+
     //Solenoid port values
     public static int shiftingGearboxesOne = 0;
     public static int shiftingGearboxesTwo = 1;
+
+
 
 
 
@@ -93,10 +96,14 @@ public class Constants {
 
 
 
+
+
     //intake folder constants
     public static float reverseLimit = 45;
     public static float forwardLimit = -45;
     public static float iDontKnow = -32;
+
+
 
 
 
@@ -107,13 +114,13 @@ public class Constants {
 
 
 
-
-
-
     //LimeLight Constants
     public static double h2 = 98.25;
     public static double h1 = 35;
     public static double a1 = 10.86;
+
+
+
 
 
     //PID Constants DriveTrain
@@ -126,11 +133,17 @@ public class Constants {
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
 
+
+
+
     //PathWeaver Constants
     public static double kMaxSpeed = 4;
     public static double kMaxAccel = 2;
     public static double kRamseteB = 2; //should be good for most robots
     public static double kRamseteZeta = 0.7; //should be good for most robots
+
+
+
 
 
     //Flywheel Stuff
@@ -141,12 +154,16 @@ public class Constants {
 
 
 
+
+
     //limelight stuff
     public static int shootingPipeline = 0;
     public static int regularPipeline = 1;
 
 
 
+
+    
     //encoder stuff
     public static int kTimeoutMs = 30;
     public static boolean kGyroReversed = true;

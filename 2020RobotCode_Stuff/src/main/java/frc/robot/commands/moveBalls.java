@@ -12,63 +12,64 @@ import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
-public class moveBalls extends CommandBase {
-
+public class moveBalls extends CommandBase 
+{
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
 
   private boolean finished = false;
 
 
-  public moveBalls() {
+  public moveBalls() 
+  {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.ballFeeder);
   }
 
 
 
-
-
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
+  public void initialize() 
+  {
+    
   }
-
-
 
 
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-      if (RobotContainer.operatorJoystick.getRawButton(Constants.moveBallsIn)) {
+  public void execute() 
+  {
+      if (RobotContainer.operatorJoystick.getRawButton(Constants.moveBallsIn)) 
+      {
           RobotContainer.ballFeeder.pullBallsIn();
       }
-      else if (RobotContainer.operatorJoystick.getRawButton(Constants.moveBallsOut)) {
+      else if (RobotContainer.operatorJoystick.getRawButton(Constants.moveBallsOut)) 
+      {
           RobotContainer.ballFeeder.pushBallsOut();
       }
-      else {
+      else 
+      {
           RobotContainer.ballFeeder.stopMovingBalls();
       }
   }
 
 
 
-
-
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
+  public void end(boolean interrupted) 
+  {
 
   }
 
 
 
-
-
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() 
+  {
     return finished;
   }
 }

@@ -11,35 +11,35 @@ import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
-public class joystickControl extends CommandBase {
-
+public class joystickControl extends CommandBase 
+{
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
 
   public double xSpeed, ySpeed;
   
 
-  public joystickControl() {
+  public joystickControl()
+  {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.driveTrain);
   }
 
 
 
-
-
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
+  public void initialize() 
+  {
+    
   }
-
-
 
 
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
+  public void execute() 
+  {
     xSpeed = RobotContainer.getDriverXSpeed();
     ySpeed = RobotContainer.getDriverYSpeed();
     RobotContainer.driveTrain.driving(xSpeed, ySpeed);
@@ -48,21 +48,19 @@ public class joystickControl extends CommandBase {
 
 
 
-
-
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
+  public void end(boolean interrupted) 
+  {
 
   }
 
 
 
-
-  
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() 
+  {
     return false;
   }
 }

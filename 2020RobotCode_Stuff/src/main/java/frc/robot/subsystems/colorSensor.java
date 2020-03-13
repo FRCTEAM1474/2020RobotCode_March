@@ -19,23 +19,26 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 
-public class colorSensor extends SubsystemBase {
+public class colorSensor extends SubsystemBase 
+{
+  private final I2C.Port i2cPort;
+  private final ColorSensorV3 colorSensor;
+  public static ColorMatch colorMatcher;
+  public static Color kBlueTarget;
+  public static Color kGreenTarget;
+  public static Color kRedTarget;
+  public static Color kYellowTarget;
+  public static String colorString;
 
-private final I2C.Port i2cPort;
-private final ColorSensorV3 colorSensor;
-public static ColorMatch colorMatcher;
-public static Color kBlueTarget;
-public static Color kGreenTarget;
-public static Color kRedTarget;
-public static Color kYellowTarget;
-public static String colorString;
-
-Color detectedColor;
-ColorMatchResult match;
+  Color detectedColor;
+  ColorMatchResult match;
 
   
-  public colorSensor() {
-    
+
+
+
+  public colorSensor() 
+  {
     i2cPort = I2C.Port.kOnboard;
     colorSensor = new ColorSensorV3(i2cPort);
     colorMatcher = new ColorMatch();
@@ -52,25 +55,29 @@ ColorMatchResult match;
 
     detectedColor = colorSensor.getColor();
     match = colorMatcher.matchClosestColor(detectedColor);
-
   }
 
-  public void determineColor() {
-
-    if (match.color == kBlueTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) {
-        colorString = "Blue";
+  public void determineColor() 
+  {
+    if (match.color == kBlueTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) 
+    {
+      colorString = "Blue";
     }
-    else if (match.color == kRedTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) {
-        colorString = "Red";
+    else if (match.color == kRedTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) 
+    {
+      colorString = "Red";
     }
-    else if (match.color == kGreenTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) {
-        colorString = "Green";
+    else if (match.color == kGreenTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) 
+    {
+      colorString = "Green";
     }
-    else if (match.color == kYellowTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) {
-        colorString = "Yellow";
+    else if (match.color == kYellowTarget && RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) 
+    {
+      colorString = "Yellow";
     }
-    else {
-        colorString = "Unknown";
+    else 
+    {
+      colorString = "Unknown";
     }
 
     SmartDashboard.putNumber("Red", detectedColor.red);
@@ -78,29 +85,34 @@ ColorMatchResult match;
     SmartDashboard.putNumber("Blue", detectedColor.blue);
     SmartDashboard.putNumber("Confidence", match.confidence);
     SmartDashboard.putString("Detected Color", colorString);
-
   }
 
 
 
-  public void setLEDLights() {
-      if (colorString == "Blue") {
-        RobotContainer.ledlights.setBlue();
-      }
-      else if (colorString == "Red") {
-        RobotContainer.ledlights.setRed();
-      }
-      else if (colorString == "Green") {
-        RobotContainer.ledlights.setGreen();
-      }
-      else if (colorString == "Yellow") {
-        RobotContainer.ledlights.setYellow();
-      }
+  public void setLEDLights() 
+  {
+    if (colorString == "Blue") 
+    {
+      RobotContainer.ledlights.setBlue();
+    }
+    else if (colorString == "Red") 
+    {
+      RobotContainer.ledlights.setRed();
+    }
+    else if (colorString == "Green") 
+    {
+      RobotContainer.ledlights.setGreen();
+    }
+    else if (colorString == "Yellow") 
+    {
+      RobotContainer.ledlights.setYellow();
+    }
   }
 
 
 
-  public void stackedColorSensor() {
+  public void stackedColorSensor() 
+  {
       determineColor();
       setLEDLights();
   }

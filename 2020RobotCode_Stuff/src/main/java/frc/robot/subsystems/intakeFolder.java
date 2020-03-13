@@ -17,8 +17,8 @@ import frc.robot.Constants;
 import frc.robot.commands.foldTheIntake;
 
 
-public class intakeFolder extends SubsystemBase {
-  
+public class intakeFolder extends SubsystemBase 
+{
   //definition of Spark MAX
   private CANSparkMax intakeFolderMotor;
 
@@ -26,7 +26,8 @@ public class intakeFolder extends SubsystemBase {
 
 
 
-  public intakeFolder() {
+  public intakeFolder() 
+  {
     //instantiation of motor controller
     intakeFolderMotor = new CANSparkMax(Constants.intakeFolder, MotorType.kBrushless);
 
@@ -39,9 +40,9 @@ public class intakeFolder extends SubsystemBase {
 
     double forwardLimitValue = intakeFolderMotor.getSoftLimit(SoftLimitDirection.kForward);
 
-    if (forwardLimitValue > 0 || forwardLimitValue < 0) {
+    if (forwardLimitValue > 0 || forwardLimitValue < 0) 
+    {
       forwardLimitValue = 0;
-
       intakeFolderMotor.setSoftLimit(SoftLimitDirection.kForward, (float) forwardLimitValue);
     }
 
@@ -50,41 +51,41 @@ public class intakeFolder extends SubsystemBase {
 
 
 
-
-
   //function which sets speed of motor if button is held
-  public void driveTheIntakeReverse(){
+  public void driveTheIntakeReverse()
+  {
       intakeFolderMotor.set(.3);
   }
 
 
 
-
-
   //function which sets speed of motor forward if button is held
-  public void driveTheIntakeForward() {
+  public void driveTheIntakeForward() 
+  {
       intakeFolderMotor.set(-.3);
   }
+
+
+
   //function which sets speed of motor if button is not held
-  public void stopDrivingIntake() {
+  public void stopDrivingIntake() 
+  {
       intakeFolderMotor.set(0);
   }
 
 
 
-
-
   //sets the initial command of the subsystem (found under commands folder)
-  protected void initDefaultCommand() {
+  protected void initDefaultCommand() 
+  {
       setDefaultCommand(new foldTheIntake());
   }
 
 
-
-
   
   @Override
-  public void periodic() {
+  public void periodic() 
+  {
     //System.out.println("Voltage: " + intakeFolderMotor.getBusVoltage());
     //System.out.println("Temperature: " + intakeFolderMotor.getMotorTemperature());
     //System.out.println("Output: " + intakeFolderMotor.getAppliedOutput());

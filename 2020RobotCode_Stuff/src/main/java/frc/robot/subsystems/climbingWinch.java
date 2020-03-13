@@ -15,7 +15,8 @@ import frc.robot.commands.winchClimber;
 import com.ctre.phoenix.motorcontrol.can.*;
 
 
-public class climbingWinch extends SubsystemBase {
+public class climbingWinch extends SubsystemBase 
+{
 
   //definition of all Drivetrain Talons
   private final WPI_TalonSRX climbMaster;
@@ -24,35 +25,47 @@ public class climbingWinch extends SubsystemBase {
   private final SpeedControllerGroup climbGearbox;
 
 
+
+
   
-  public climbingWinch() {
-
-      climbMaster = new WPI_TalonSRX(Constants.climbMaster);
-      climbFollower = new WPI_VictorSPX(Constants.climbFollower);
+  public climbingWinch() 
+  {
+    climbMaster = new WPI_TalonSRX(Constants.climbMaster);
+    climbFollower = new WPI_VictorSPX(Constants.climbFollower);
     
-      climbFollower.follow(climbMaster);
-    
-      climbMaster.configFactoryDefault();
-      climbFollower.configFactoryDefault();
+    climbFollower.follow(climbMaster);
 
-      climbGearbox = new SpeedControllerGroup(climbMaster, climbFollower);
-
+    climbMaster.configFactoryDefault();
+    climbFollower.configFactoryDefault();
+    climbGearbox = new SpeedControllerGroup(climbMaster, climbFollower);
   }
 
-  public void winchForward() {
-      climbGearbox.set(0.5);
+
+
+  public void winchForward() 
+  {
+    climbGearbox.set(0.5);
   }
 
-  public void winchReverse() {
-      climbGearbox.set(-0.5);
+
+
+  public void winchReverse() 
+  {
+    climbGearbox.set(-0.5);
   }
 
-  public void stopWinching() {
-      climbGearbox.set(0.0);
+
+
+  public void stopWinching() 
+  {
+    climbGearbox.set(0.0);
   }
+
+
 
   //sets the initial command of the subsystem (found under commands folder)
-  protected void initDefaultCommand() {
+  protected void initDefaultCommand() 
+  {
       setDefaultCommand(new winchClimber());
   }
 }

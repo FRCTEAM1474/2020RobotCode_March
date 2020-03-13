@@ -12,15 +12,16 @@ import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
-public class testing extends CommandBase {
-
+public class testing extends CommandBase 
+{
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
 
   private boolean finished = false;
 
 
-  public testing() {
+  public testing() 
+  {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.ledlights);
     addRequirements(RobotContainer.colorSensor);
@@ -28,42 +29,40 @@ public class testing extends CommandBase {
 
 
 
-
-
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
+  public void initialize() 
+  {
+    
   }
-
-
 
 
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if (RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) {
+  public void execute() 
+  {
+    if (RobotContainer.operatorJoystick.getRawButton(Constants.controlPanelLEDSignal)) 
+    {
       RobotContainer.colorSensor.stackedColorSensor();
     }
   }
 
 
 
-
-
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
+  public void end(boolean interrupted) 
+  {
 
   }
 
 
 
-
-
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() 
+  {
     return finished;
   }
 }

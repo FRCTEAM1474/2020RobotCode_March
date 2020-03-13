@@ -13,66 +13,78 @@ import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
-public class findDistance extends CommandBase {
-
+public class findDistance extends CommandBase 
+{
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
 
   private boolean finished = false;
 
 
-  public findDistance() {
+
+  public findDistance() 
+  {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.limelight);
-
   }
 
-  public double yAngleOffset() {
+
+
+  public double yAngleOffset() 
+  {
     double a2 = Limelight.getTargetYAngle();
     return a2;
   }
 
-  public double targetDistance() {
+
+
+  public double targetDistance() 
+  {
     double distance = (Constants.h2 - Constants.h1)/(Math.atan(Constants.a1 + yAngleOffset()));
     return distance;
   }
   
-  private void addRequirements(Limelight limelight) {
+
+
+  private void addRequirements(Limelight limelight) 
+  {
+
   }
+
+
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
+  public void initialize() 
+  {
+    
   }
-
-
 
 
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
+  public void execute() 
+  {
       targetDistance();
       System.out.println("The Target Distance is: " + targetDistance());
   }
 
 
 
-
-
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
+  public void end(boolean interrupted) 
+  {
 
   }
 
 
 
-
-
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() 
+  {
     return finished;
   }
 }
